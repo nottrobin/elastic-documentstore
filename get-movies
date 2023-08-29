@@ -11,63 +11,6 @@ import pandas as pd
 es = Elasticsearch("http://localhost:9200")
 es.info().body
 
-# Set up the movies index
-movie_mappings = {
-        "properties": {
-            "title": {"type": "text", "analyzer": "english"},
-            "ethnicity": {"type": "text", "analyzer": "standard"},
-            "director": {"type": "text", "analyzer": "standard"},
-            "cast": {"type": "text", "analyzer": "standard"},
-            "genre": {"type": "text", "analyzer": "standard"},
-            "plot": {"type": "text", "analyzer": "english"},
-            "year": {"type": "integer"},
-            "wiki_page": {"type": "keyword"}
-    }
-}
-es.options(ignore_status=400).indices.create(index="movies", mappings=movie_mappings)
-
-# Add movie data to Elasticsearch
-# ===
-
-# Read the CSV
-df = (
-    pd.read_csv("wiki_movie_plots_deduped.csv")
-    .dropna()
-    .sample(5000, random_state=42)
-    .reset_index()
-)
-
-# Transform data into Elasticsearch format
-bulk_data = []
-for i,row in df.iterrows():
-    bulk_data.append(
-        {
-            "_index": "movies",
-            "_id": i,
-            "_source": {        
-                "title": row["Title"],
-                "ethnicity": row["Origin/Ethnicity"],
-                "director": row["Director"],
-                "cast": row["Cast"],
-                "genre": row["Genre"],
-                "plot": row["Plot"],
-                "year": row["Release Year"],
-                "wiki_page": row["Wiki Page"],
-            }
-        }
-    )
-
-# Write the data into 
-bulk(es, bulk_data)
-
-# Retrieve data from Elasticsearch
-# ===
-
-# Print out the count
-es.indices.refresh(index="movies")
-count = es.cat.count(index="movies", format="json")[0]["count"]
-print(f"Inserted {count} movies")
-
 # Get all movies starring Jack Nocholson, not directed by Roman Polanski
 resp = es.search(
     index="movies",
