@@ -5,7 +5,8 @@
 ``` bash
 poetry install
 docker compose up --wait
-poetry run ./get-movies
+poetry run ./import-movies  # Add 5000 movies from data CSV
+poetry run ./get-movies     # Get some movies with Jack Nicholson
 ```
 
 This should output:

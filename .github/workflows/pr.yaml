@@ -1,0 +1,31 @@
+name: PR checks
+on: pull_request
+
+jobs:
+  test-documentstore:
+    runs-on: ubuntu-latest
+    services:
+      elasticsearch:
+        ports:
+          - '9200:9200'
+          - '9300:9300'
+        environment:
+          - xpack.security.enabled=false
+          - discovery.type=single-node
+        image: 'docker.elastic.co/elasticsearch/elasticsearch:8.9.0'
+
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Import movies
+        run: poetry run ./import-movies
+
+      - name: Get movies
+        run: poetry run ./get-movies
