@@ -1,5 +1,8 @@
 # Haystack v2 DocumentStore for ElasticSearch
 
+ A Haystack v2 DocumentStore class for interfacing with Elasticsearch
+Resources.
+
 ## Usage
 
 ``` bash
