@@ -4,15 +4,16 @@ on: pull_request
 jobs:
   test-documentstore:
     runs-on: ubuntu-latest
+    container: python:3.11-bookworm
+    env:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    
     services:
       elasticsearch:
-        ports:
-          - '9200:9200'
-          - '9300:9300'
-        environment:
-          - xpack.security.enabled=false
-          - discovery.type=single-node
         image: 'docker.elastic.co/elasticsearch/elasticsearch:8.9.0'
+        env:
+          xpack.security.enabled: false
+          discovery.type: single-node
 
 
     steps:
