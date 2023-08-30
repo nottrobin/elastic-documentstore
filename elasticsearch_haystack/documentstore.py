@@ -9,6 +9,7 @@ from haystack.preview.document_stores.errors import (
     MissingDocumentError,
 )
 from haystack.preview.document_stores.protocols import DuplicatePolicy
+from haystack.preview.document_stores.decorator import document_store
 from haystack.preview.dataclasses.document import Document
 
 
@@ -55,11 +56,13 @@ def _convert_document_to_es_source(document: Document) -> dict:
     }
 
 
+@document_store
 class ElasticsearchStore:
     """
-    A Haystack v2 DocumentStore class, to interface with an Elasticsearch backend.
+    A Haystack v2 DocumentStore class,
+    to interface with a single Index within an Elasticsearch backend.
 
-    This store can query a single index within a pre-configured Elasticsearch instance.
+
     """
 
     def __init__(self, es_client: Type[Elasticsearch], index_name: str) -> None:
@@ -67,6 +70,11 @@ class ElasticsearchStore:
         The store expects to be passed a pre-configured instance of Elasticsearch,
         pointing to a Elasticsearch with an index already set up. This is to keep
         this class as naive and single-purpose as possible.
+
+        :param es_client: An Elasticsearch v8.0 client object,
+            configured to connect to an Elasticsearch backend
+        :param index_name: The name of the index within Elasticsearch for this
+            class to operate on
         """
 
         self._es_client = es_client
