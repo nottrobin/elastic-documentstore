@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "elastic-documentstore"
+name = "elasticsearch-haystack"
 version = "0.1.0"
 description = ""
 authors = ["Robin Winslow Morris <robin@robinwinslow.co.uk>"]
@@ -9,6 +9,8 @@ readme = "README.md"
 python = "^3.11"
 pandas = "^2.0.3"
 elasticsearch = "^8.9.0"
+haystack-ai = "^0.9.0"
+tox = "^4.11.0"
 
 [tool.poetry.group.dev.dependencies]
 ipdb = "^0.13.13"
