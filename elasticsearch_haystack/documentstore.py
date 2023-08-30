@@ -256,6 +256,6 @@ class ElasticsearchStore:
 
         for document_id in document_ids:
             try:
-                self._client.delete(index=self._index_name, id=document_ids)
+                self._es_client.delete(index=self._index_name, id=document_id)
             except NotFoundError:
                 raise MissingDocumentError

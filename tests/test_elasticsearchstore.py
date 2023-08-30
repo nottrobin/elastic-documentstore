@@ -3,8 +3,11 @@ import os
 import unittest
 
 # Packages
-from elasticsearch import Elasticsearch
-from haystack.preview.document_stores.errors import DuplicateDocumentError
+from elasticsearch import Elasticsearch, NotFoundError
+from haystack.preview.document_stores.errors import (
+    DuplicateDocumentError,
+    MissingDocumentError,
+)
 from haystack.preview.document_stores.protocols import DuplicatePolicy
 from haystack.preview.dataclasses.document import Document
 import pandas as pd
@@ -239,3 +242,41 @@ class TestElasticsearchStore(unittest.TestCase):
 
         self.assertNotEqual(new_store, self._es_store)
         self.assertEqual(new_store.__dict__, self._es_store.__dict__)
+
+    def test_delete_documents(self) -> None:
+        """
+        Check we can delete documents,
+        and we get a MissingDocumentError for missing documents
+        """
+
+        doc_1 = Document.from_dict(
+            {
+                "content": "Document 1",
+            }
+        )
+        doc_2 = Document.from_dict(
+            {
+                "content": "Document 2",
+            }
+        )
+        doc_3 = Document.from_dict(
+            {
+                "content": "Document 3",
+                "metadata": {"meta_key": "meta_value"},
+            }
+        )
+
+        self._es_store.write_documents([doc_1, doc_2, doc_3])
+        self._es_store.delete_documents([doc_1.id, doc_2.id])
+
+        with self.assertRaises(NotFoundError):
+            doc1_response = self._es_client.get(index=INDEX_NAME, id=doc_1.id)
+
+        with self.assertRaises(NotFoundError):
+            doc2_response = self._es_client.get(index=INDEX_NAME, id=doc_2.id)
+
+        doc3_response = self._es_client.get(index=INDEX_NAME, id=doc_3.id)
+        self.assertTrue(doc3_response["found"])
+
+        with self.assertRaises(MissingDocumentError):
+            self._es_store.delete_documents([doc_3.id, doc_2.id, doc_1.id])
