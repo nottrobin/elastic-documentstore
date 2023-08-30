@@ -7,14 +7,13 @@ jobs:
     container: python:3.11-bookworm
     env:
       ELASTICSEARCH_URL: http://elasticsearch:9200
-    
+
     services:
       elasticsearch:
         image: 'docker.elastic.co/elasticsearch/elasticsearch:8.9.0'
         env:
           xpack.security.enabled: false
           discovery.type: single-node
-
 
     steps:
       - uses: actions/checkout@v2
@@ -43,4 +42,3 @@ jobs:
 
       - name: Run linter
         run: poetry run tox -e lint
-s
