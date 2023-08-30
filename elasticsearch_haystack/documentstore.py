@@ -61,8 +61,6 @@ class ElasticsearchStore:
     """
     A Haystack v2 DocumentStore class,
     to interface with a single Index within an Elasticsearch backend.
-
-
     """
 
     def __init__(self, es_client: Type[Elasticsearch], index_name: str) -> None:
