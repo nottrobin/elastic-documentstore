@@ -34,7 +34,8 @@ class TestElasticsearchStore(unittest.TestCase):
         )
 
         # Empty elasticsearch
-        self._es_client.delete_by_query(index=INDEX_NAME, query={"match_all": {}})
+        if self._es_client.indices.exists(index=INDEX_NAME):
+            self._es_client.delete_by_query(index=INDEX_NAME, query={"match_all": {}})
 
         # Get the data
         self._movies_dataframe = (

@@ -227,7 +227,7 @@ class ElasticsearchStore:
                     id=document.id,
                 )
 
-                if document.id in added_ids or es_response["found"]:
+                if document.id in added_ids or es_response.get("found"):
                     if policy is DuplicatePolicy.FAIL:
                         raise DuplicateDocumentError()
                     elif policy is DuplicatePolicy.SKIP:
