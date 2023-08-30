@@ -270,10 +270,10 @@ class TestElasticsearchStore(unittest.TestCase):
         self._es_store.delete_documents([doc_1.id, doc_2.id])
 
         with self.assertRaises(NotFoundError):
-            doc1_response = self._es_client.get(index=INDEX_NAME, id=doc_1.id)
+            self._es_client.get(index=INDEX_NAME, id=doc_1.id)
 
         with self.assertRaises(NotFoundError):
-            doc2_response = self._es_client.get(index=INDEX_NAME, id=doc_2.id)
+            self._es_client.get(index=INDEX_NAME, id=doc_2.id)
 
         doc3_response = self._es_client.get(index=INDEX_NAME, id=doc_3.id)
         self.assertTrue(doc3_response["found"])

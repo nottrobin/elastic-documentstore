@@ -243,7 +243,7 @@ class ElasticsearchStore:
             added_ids.append(document.id)
 
         bulk(self._es_client, bulk_data)
-        self._es_client.indices.refresh(index="movies")
+        self._es_client.indices.refresh(index=self._index_name)
 
     def delete_documents(self, document_ids: list[str]) -> None:
         """
@@ -257,5 +257,6 @@ class ElasticsearchStore:
         for document_id in document_ids:
             try:
                 self._es_client.delete(index=self._index_name, id=document_id)
+                self._es_client.indices.refresh(index=self._index_name)
             except NotFoundError:
                 raise MissingDocumentError
