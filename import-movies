@@ -2,14 +2,12 @@
 
 
 # Packages
-from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 import pandas as pd
 
+# Local
+from es_backend import es_client
 
-# Connect to Elasticsearch
-es = Elasticsearch("http://localhost:9200")
-es.info().body
 
 # Set up the movies index
 movie_mappings = {
@@ -24,7 +22,7 @@ movie_mappings = {
             "wiki_page": {"type": "keyword"}
     }
 }
-es.options(ignore_status=400).indices.create(index="movies", mappings=movie_mappings)
+es_client.options(ignore_status=400).indices.create(index="movies", mappings=movie_mappings)
 
 # Add movie data to Elasticsearch
 # ===
@@ -58,9 +56,9 @@ for i,row in df.iterrows():
     )
 
 # Write the data into 
-bulk(es, bulk_data)
+bulk(es_client, bulk_data)
 
 # Print out the count
-es.indices.refresh(index="movies")
-count = es.cat.count(index="movies", format="json")[0]["count"]
+es_client.indices.refresh(index="movies")
+count = es_client.cat.count(index="movies", format="json")[0]["count"]
 print(f"Imported {count} movies")

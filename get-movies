@@ -6,13 +6,12 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 import pandas as pd
 
+# Local
+from es_backend import es_client
 
-# Connect to Elasticsearch
-es = Elasticsearch("http://localhost:9200")
-es.info().body
 
 # Get all movies starring Jack Nocholson, not directed by Roman Polanski
-resp = es.search(
+resp = es_client.search(
     index="movies",
     query={
             "bool": {

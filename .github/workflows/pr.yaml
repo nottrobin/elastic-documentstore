@@ -4,6 +4,9 @@ on: pull_request
 jobs:
   test-documentstore:
     runs-on: ubuntu-latest
+    container: python:3.11-bookworm
+    env:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     
     services:
       elasticsearch:
@@ -11,15 +14,7 @@ jobs:
         env:
           xpack.security.enabled: false
           discovery.type: single-node
-        ports:
-          - 9200:9200
-          - 9300:9300
 
-    container:
-      image: python:3.11-bookworm
-      ports:
-        - 9200:9200
-        - 9300:9300
 
     steps:
       - uses: actions/checkout@v2
